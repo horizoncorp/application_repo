@@ -9,7 +9,7 @@ pipeline {
         stage('prework') {
             steps {
                 script {
-                    sh 'bash -x ${WORKSPACE}/infrastructure/setup_terraform.sh'
+                    sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
                 }
             }
