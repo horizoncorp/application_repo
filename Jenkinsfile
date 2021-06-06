@@ -14,8 +14,8 @@ pipeline {
                 script {
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
-                    sh 'for dir in ${target_directory}/*/${ENVIRONMENT}/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/${ENVIRONMENT}/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -24,10 +24,12 @@ pipeline {
                 branch 'main'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/test/${ENVIRONMENT}"
+                target_directory = "${WORKSPACE}/infrastructure/environment/test"
             }
             steps {
                 script {
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                     sh 'cd ${target_directory} && ${WORKSPACE}/terraform init'
                     sh 'cd ${target_directory} && ${WORKSPACE}/terraform plan'
                 }
