@@ -8,14 +8,14 @@ pipeline {
     stages {
         stage('prework') {
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment"
+                target_directory = "${WORKSPACE}/infrastructure/environment/test"
             }
             steps {
                 script {
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
-                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -30,8 +30,62 @@ pipeline {
                 script {
                     sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
                     sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
-                    sh 'cd ${target_directory} && ${WORKSPACE}/terraform init'
-                    sh 'cd ${target_directory} && ${WORKSPACE}/terraform plan'
+                }
+            }
+        }
+        stage('INTAKE') {
+            when {
+                branch 'intake'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/intake"
+            }
+            steps {
+                script {
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                }
+            }
+        }
+        stage('DEV') {
+            when {
+                branch 'development'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/dev"
+            }
+            steps {
+                script {
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                }
+            }
+        }
+        stage('UAT') {
+            when {
+                branch 'uat'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/uat"
+            }
+            steps {
+                script {
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                }
+            }
+        }
+        stage('PROD') {
+            when {
+                branch 'production'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/prod"
+            }
+            steps {
+                script {
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
