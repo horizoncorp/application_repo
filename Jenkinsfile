@@ -12,28 +12,27 @@ pipeline {
             }
             steps {
                 script {
-                    sh "echo ${ENVIRONMENT}"
-                    // sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
-                    // sh '${WORKSPACE}/terraform version'
-                    // sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    // sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
+                    sh '${WORKSPACE}/terraform version'
+                    sh 'for dir in ${target_directory}/*/${ENVIRONMENT}/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/${ENVIRONMENT}/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
-        // stage('TEST') {
-        //     when {
-        //         branch 'main'
-        //     }
-        //     environment {
-        //         target_directory = "${WORKSPACE}/infrastructure/environment/test"
-        //     }
-        //     steps {
-        //         script {
-        //             sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-        //             sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
-        //         }
-        //     }
-        // }
+        stage('TEST') {
+            when {
+                branch 'main'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/test/${ENVIRONMENT}"
+            }
+            steps {
+                script {
+                    sh 'cd ${target_directory} && ${WORKSPACE}/terraform init'
+                    sh 'cd ${target_directory} && ${WORKSPACE}/terraform plan'
+                }
+            }
+        }
     }
     post{
         success{
