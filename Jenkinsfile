@@ -6,12 +6,21 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
     stages {
-        stage('terraform version') {
+        stage('prework') {
             steps {
                 script {
-                    sh '~/terraform version'
-                    sh '~/terraform init'
-                    sh '~/terraform plan'
+                    sh 'bash -x ${WORKSPACE}/infrastructure/setup_terraform.sh'
+                    sh '${WORKSPACE}/terraform version'
+                }
+            }
+        }
+        stage('TEST') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    sh '${WORKSPACE}/terraform plan ${WORKSPACE}/infrastructure/environment/test/*/'
                 }
             }
         }
