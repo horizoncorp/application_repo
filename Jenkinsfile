@@ -7,10 +7,15 @@ pipeline {
     }
     stages {
         stage('prework') {
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment"
+            }
             steps {
                 script {
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
+                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
