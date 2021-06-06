@@ -18,10 +18,13 @@ pipeline {
             when {
                 branch 'main'
             }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/test"
+            }
             steps {
                 script {
-                    sh 'for dir in ${WORKSPACE}/infrastructure/environment/test/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${WORKSPACE}/infrastructure/environment/test/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
