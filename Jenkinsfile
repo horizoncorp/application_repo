@@ -20,6 +20,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh 'for dir in ${WORKSPACE}/infrastructure/environment/test/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
                     sh 'for dir in ${WORKSPACE}/infrastructure/environment/test/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
