@@ -49,7 +49,7 @@ pipeline {
         }
         stage('DEV') {
             when {
-                branch 'development'
+                branch 'dev'
             }
             environment {
                 target_directory = "${WORKSPACE}/infrastructure/environment/dev"
@@ -77,7 +77,7 @@ pipeline {
         }
         stage('PROD') {
             when {
-                branch 'production'
+                branch 'prod'
             }
             environment {
                 target_directory = "${WORKSPACE}/infrastructure/environment/prod"
