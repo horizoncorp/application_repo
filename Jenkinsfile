@@ -25,4 +25,22 @@ pipeline {
             }
         }
     }
+    post{
+        success{
+            echo "========pipeline executed successfully========"
+        }
+        always{
+            echo "========cleanup========"
+            deleteDir()
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+        unstable {
+            echo "========I am unstable========"
+        }
+        changed {
+            echo "========things were different before========"
+        }
+    }
 }
