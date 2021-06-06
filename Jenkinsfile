@@ -12,27 +12,28 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
-                    sh '${WORKSPACE}/terraform version'
-                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh "echo ${ENVIRONMENT}"
+                    // sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
+                    // sh '${WORKSPACE}/terraform version'
+                    // sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
-        stage('TEST') {
-            when {
-                branch 'main'
-            }
-            environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/test"
-            }
-            steps {
-                script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
-                }
-            }
-        }
+        // stage('TEST') {
+        //     when {
+        //         branch 'main'
+        //     }
+        //     environment {
+        //         target_directory = "${WORKSPACE}/infrastructure/environment/test"
+        //     }
+        //     steps {
+        //         script {
+        //             sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+        //             sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+        //         }
+        //     }
+        // }
     }
     post{
         success{
