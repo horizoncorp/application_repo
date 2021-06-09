@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     // Define Variable
-                    def USER_INPUT = input(
+                    def REGION = input(
                         message: 'Region?',
                         parameters: [
                                 [$class: 'ChoiceParameterDefinition',
@@ -22,6 +22,7 @@ pipeline {
                                 description: 'Menu - select box option']
                         ]
                     )
+                    env.USER_INPUT = ${REGION}
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
                     sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
