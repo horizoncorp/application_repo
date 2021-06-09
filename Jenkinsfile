@@ -6,7 +6,10 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
     stages {
-        stage('input') {
+        stage('prework') {
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment"
+            }
             steps {
                 script {
                     // Define Variable
@@ -19,22 +22,6 @@ pipeline {
                                 description: 'Menu - select box option']
                         ]
                     )
-                    echo "The answer is: ${USER_INPUT}"
-
-                    if( "${USER_INPUT}" == "yes"){
-                        //do something
-                    } else {
-                        //do something else
-                    }
-                }
-            }
-        }
-        stage('prework') {
-            environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment"
-            }
-            steps {
-                script {
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
                     sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
