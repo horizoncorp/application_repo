@@ -8,14 +8,28 @@ pipeline {
     stages {
         stage('prework') {
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/test"
+                target_directory = "${WORKSPACE}/infrastructure/environment"
             }
             steps {
                 script {
+                    // Define Variable
+                    // def REGION = input(
+                    //     message: 'Region?',
+                    //     parameters: [
+                    //             [$class: 'ChoiceParameterDefinition',
+                    //             choices: ['agcs','spain'].join('\n'),
+                    //             name: 'input',
+                    //             description: 'Menu - select box option']
+                    //     ]
+                    // )
+                    
+                    env.USER_INPUT = input message: 'User input required',
+                    ok: 'Deploy!',
+                    parameters: [choice(name: 'Branch to deploy', choices: "agcs\nspain\n", description: 'What branch you wont deploy?')]
                     sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
                     sh '${WORKSPACE}/terraform version'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -24,12 +38,14 @@ pipeline {
                 branch 'main'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/test"
+                target_directory = "${WORKSPACE}/infrastructure/environment/test/${USER_INPUT}"
             }
             steps {
                 script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    // sh 'for dir in ${target_directory}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -38,12 +54,14 @@ pipeline {
                 branch 'intake'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/intake"
+                target_directory = "${WORKSPACE}/infrastructure/environment/intake/${USER_INPUT}"
             }
             steps {
                 script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -52,12 +70,14 @@ pipeline {
                 branch 'dev'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/dev"
+                target_directory = "${WORKSPACE}/infrastructure/environment/dev/${USER_INPUT}"
             }
             steps {
                 script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -66,12 +86,14 @@ pipeline {
                 branch 'uat'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/uat"
+                target_directory = "${WORKSPACE}/infrastructure/environment/uat/${USER_INPUT}"
             }
             steps {
                 script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -80,12 +102,14 @@ pipeline {
                 branch 'prod'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/prod"
+                target_directory = "${WORKSPACE}/infrastructure/environment/prod/${USER_INPUT}"
             }
             steps {
                 script {
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
                 }
             }
         }
@@ -94,10 +118,10 @@ pipeline {
         success{
             echo "========pipeline executed successfully========"
         }
-        always{
-            echo "========cleanup========"
-            deleteDir()
-        }
+        // always{
+        //     echo "========cleanup========"
+        //     deleteDir()
+        // }
         failure{
             echo "========pipeline execution failed========"
         }
