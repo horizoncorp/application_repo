@@ -1,5 +1,3 @@
-import static groovy.io.FileType.DIRECTORIES
-
 pipeline {
     agent any
     environment {
@@ -24,11 +22,7 @@ pipeline {
                     //             description: 'Menu - select box option']
                     //     ]
                     // )
-                    def list = []
-                    new File('${WORKSPACE}/infrastructure/environment').eachFileRecurse (DIRECTORIES) { file ->
-                    list << file.name
-                    }
-                    println list
+                    
                     env.USER_INPUT = input message: 'User input required',
                     ok: 'Deploy!',
                     parameters: [choice(name: 'Branch to deploy', choices: "agcs\nspain\n", description: 'What branch you wont deploy?')]
