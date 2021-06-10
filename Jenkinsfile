@@ -118,10 +118,10 @@ pipeline {
         success{
             echo "========pipeline executed successfully========"
         }
-        always{
-            echo "========cleanup========"
-            deleteDir()
-        }
+        // always{
+        //     echo "========cleanup========"
+        //     deleteDir()
+        // }
         failure{
             echo "========pipeline execution failed========"
         }
