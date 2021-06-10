@@ -15,10 +15,26 @@ pipeline {
                     env.USER_INPUT = input message: 'User input required',
                     ok: 'Deploy!',
                     parameters: [choice(name: 'Environment to deploy', choices: "agcs\nspain\n", description: 'What environment you want deploy?')]
-                    sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
-                    sh '${WORKSPACE}/terraform version'
-                    sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
-                    sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                    sh 'echo ${target_directory}'
+                    // sh 'bash -x ${WORKSPACE}/infrastructure/helpers/setup_terraform.sh'
+                    // sh '${WORKSPACE}/terraform version'
+                    // sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform init); done'
+                    // sh 'for dir in ${target_directory}/*/${USER_INPUT}; do (cd "$dir" && ${WORKSPACE}/terraform plan); done'
+                }
+            }
+        }
+        stage('PLAN ONLY') {
+            when {
+                branch 'PR-*'
+            }
+            environment {
+                target_directory = "${WORKSPACE}/infrastructure/environment/${CHANGE_TARGET}/${USER_INPUT}"
+            }
+            steps {
+                script {
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -31,8 +47,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -45,8 +62,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -59,8 +77,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -73,8 +92,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -87,8 +107,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
-                    sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+                    sh 'echo ${target_directory}'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
+                    // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
                 }
             }
         }
@@ -97,10 +118,10 @@ pipeline {
         success{
             echo "========pipeline executed successfully========"
         }
-        // always{
-        //     echo "========cleanup========"
-        //     deleteDir()
-        // }
+        always{
+            echo "========cleanup========"
+            deleteDir()
+        }
         failure{
             echo "========pipeline execution failed========"
         }
