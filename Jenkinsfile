@@ -27,7 +27,7 @@ pipeline {
                 branch 'main'
             }
             environment {
-                target_directory = "${WORKSPACE}/infrastructure/environment/test/${USER_INPUT}"
+                target_directory = "${WORKSPACE}/infrastructure/environment/${CHANGE_TARGET}/${USER_INPUT}"
             }
             steps {
                 script {
