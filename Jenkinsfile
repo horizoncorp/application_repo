@@ -12,6 +12,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh 'bash -x ${WORKSPACE}/infrastructure/helpers/verify_build.sh'
                     env.USER_INPUT = input message: 'User input required',
                     ok: 'Deploy!',
                     parameters: [choice(name: 'Environment to deploy', choices: "agcs\nspain\n", description: 'What environment you want deploy?')]
