@@ -96,6 +96,7 @@ pipeline {
                     sh 'echo ${target_directory}'
                     // sh 'cd "$target_directory" && ${WORKSPACE}/terraform init'
                     // sh 'cd "$target_directory" && ${WORKSPACE}/terraform plan'
+
                 }
             }
         }
@@ -119,10 +120,10 @@ pipeline {
         success{
             echo "========pipeline executed successfully========"
         }
-        always{
-            echo "========cleanup========"
-            deleteDir()
-        }
+        // always{
+        //     echo "========cleanup========"
+        //     deleteDir()
+        // }
         failure{
             echo "========pipeline execution failed========"
         }
